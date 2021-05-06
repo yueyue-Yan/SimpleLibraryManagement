@@ -1,36 +1,36 @@
-### ����Javaʵ�ֵ�ͼ�����ϵͳ
+### 基于Java实现的图书管理系统
 
-##### ������
+##### 需求简介
 
-ֻ�豾�����У�����Java���ԣ����������ҳ�������棬��Ҫ�ڳ��򽻻�������ʾ�û�������
+只需本地运行，基于Java语言，无需设计网页交互界面，但要在程序交互界面提示用户操作。
 
 ***
 
-##### ��������
+##### 环境依赖
 
 Java  jdbc MySQL
 
 ***
 
-##### ����ʵ��
+##### 功能实现
 
-1. ��½�˳�
+1. 登陆退出
 
-2. ����
+2. 借书
 
-3. ����
+3. 还书
 
-4. ����
+4. 加书
 
-5. ����ָ���鼮��Ϣ
+5. 查阅指定书籍信息
 
-6. ���ĸ��˽�����Ϣ 
+6. 查阅个人借书信息 
 
 ***
 
-##### Ŀ¼����
+##### 目录描述
 
-- MySQL���ݱ���
+- MySQL数据表格
 
   - student(sno;sname;password)
 
@@ -40,47 +40,44 @@ Java  jdbc MySQL
 
   - session
 
-    [����Դ��](https://c.runoob.com/front-end/712)
+- .Java文件
 
-- .Java�ļ�
+  - 图书馆登录.java
 
-  - ͼ��ݵ�¼.java
+  - 图书馆.java
 
-  - ͼ���.java
-
-    [Դ����](https://c.runoob.com/front-end/712)
 
 ***
 
-##### �������⼰�������
+##### 遇到问题及解决方案
 
-**1. ��ε�¼ʵ���˳����������ݱ�����ϵ��**
+**1. 如何登录实现退出操作与数据表相联系？**
 
-����session�����洢��ǰ��¼���û����˳�����ʱ�����session��
+创建session表，存储当前登录的用户，退出操作时，清空session表
 
-**2.һ�˽��Ķ౾��ͬ�鼮���������һ��ֻ��һ������sb��������ֻɾ��һ����**
+**2.一人借阅多本相同书籍，如何做到一次只还一本？（sb表中数据只删除一条）**
 
-����id��ɾ��id����
+自增id，删除id最大的
 
-ʱ�����ɾ��ʱ�������
+时间戳，删除时间戳最大的
 
-**3. ���ʵ�֡��Լ������Լ�������**
+**3. 如何实现“自己借书自己还”？**
 
-��ѯsb��ʱ��֤sno��������session�е�sno������ǰ�û���bno�����û�����Ҫ�����鼮��
+查询sb表时保证sno等于来自session中的sno，及当前用户；bno来自用户输入要还的书籍，
 
-��ѯ�Ƿ��ж�Ӧ�����ݣ����У���֤�������ǵ�ǰ��¼�û������ģ����Թ黹��
+查询是否有对应的数据，若有，则证明该书是当前登录用户所借阅，可以归还。
 
 ~~~
-// ȷ�ϴ�ʱsession����sno��sb��sno�Ƿ�һ����Ҫ�����鼮�Ƿ���sb����ѡ��sno��bnoһ�£�һ������Ի��飬���򲻿���
+// 确认此时session表的sno与sb中sno是否一致且要还的书籍是否与sb表中选中sno的bno一致，一致则可以还书，否则不可以
 		String sql = "select sno,bno from sb where sno=(select sno from session) and bno=(select bno from book where bname=?) ";
 		ps = con.prepareStatement(sql);
 		ps.setString(1, bname);
 		ResultSet rs3 = ps.executeQuery();
 ~~~
 
-**4.�ڵ�½���������û�������Scanner���ܽ��ն��String **
+**4. 在登陆方法接受用户输入中Scanner不能接收多个String**
 
-��nextline()��Ϊnext()
+将nextline()改为next()
 
 ***
 
